@@ -4,11 +4,11 @@ import android.app.Application
 import com.caririfest.app.di.initializeKoin
 import org.koin.android.ext.koin.androidContext
 
-class Application : Application(){
+class CaririFestApp : Application(){
     override fun onCreate() {
         super.onCreate()
         initializeKoin {
-            androidContext(this@Application)
+            androidContext(this@CaririFestApp)
         }
     }
 }
