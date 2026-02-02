@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Cariri Fest</string>
+
+    <!--imageDescriptions-->
+    <string name="backgroundImageOnbDescription">image_backgroundOnboarding</string>
+    <string name="imageOnbDescription">image_forOnboarding</string>
 </resources>
