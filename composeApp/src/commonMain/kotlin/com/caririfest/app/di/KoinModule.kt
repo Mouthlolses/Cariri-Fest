@@ -7,15 +7,20 @@ import com.caririfest.app.data.database.getDatabaseBuilder
 import com.caririfest.app.network.KtoAPIClient
 import com.caririfest.app.repository.EventRepository
 import com.caririfest.app.repository.EventRepositoryImpl
+import com.caririfest.app.ui.home.feed.FeedViewModel
 import io.ktor.client.HttpClient
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 expect val targetModule: Module
 
 val appModule = module {
+
+    viewModel { FeedViewModel(get()) }
+
 //    viewModel { GameViewModel(get()) }
 //    viewModel { LoginViewModel(get()) }
 //    viewModel { RegisterViewModel() }

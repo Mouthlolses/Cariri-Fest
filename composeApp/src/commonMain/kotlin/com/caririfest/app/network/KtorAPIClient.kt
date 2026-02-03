@@ -12,26 +12,14 @@ import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
+expect object KtorClientFactory {
+    fun create(): HttpClient
+}
+
 internal object KtoAPIClient {
-    val httpClient = HttpClient {
-        install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-                useAlternativeNames = false
-            })
-        }
 
-
-        install(Logging) {
-            logger = Logger.DEFAULT
-            level = LogLevel.ALL
-        }
-
-        defaultRequest {
-            accept(ContentType.Any)
-            url(
-                urlString = "https://raw.githubusercontent.com/git-jr/sample-files/refs/heads/main/api/"
-            )
-        }
+    val httpClient: HttpClient by lazy {
+        KtorClientFactory.create()
     }
+
 }

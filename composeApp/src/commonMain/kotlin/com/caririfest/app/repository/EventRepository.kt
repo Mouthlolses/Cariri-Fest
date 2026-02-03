@@ -4,12 +4,13 @@ import com.caririfest.app.data.EventService
 import com.caririfest.app.data.database.EventDao
 import com.caririfest.app.model.Event
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 
 interface EventRepository {
-    suspend fun getAll(): List<Event>
-    suspend fun getAllLocal(): Flow<List<Event>>
-    suspend fun saveLocal(questions: List<Event>)
-    fun getRandomQuestions(categoryId: String): Flow<List<Event>>
+    fun getAll(): Flow<List<Event>>
+
+    suspend fun refresh()
 }
 
 class EventRepositoryImpl(
@@ -17,20 +18,22 @@ class EventRepositoryImpl(
     private val dao: EventDao
 ) : EventRepository {
 
-    override suspend fun getAll(): List<Event> {
-        val events = service.getAll().map { it }
-        return events
+    override fun getAll(): Flow<List<Event>> = flow {
+        refresh()
+        emitAll(dao.getAll())
     }
 
-    override suspend fun getAllLocal(): Flow<List<Event>> {
-        return dao.getAll()
-    }
+    override suspend fun refresh() {
+        try {
+            val remoteEvents = service.getAll()
 
-    override suspend fun saveLocal(questions: List<Event>) {
-        dao.insert(questions)
-    }
+            if (remoteEvents.isNotEmpty()) {
+                dao.insert(remoteEvents)
+            }
 
-    override fun getRandomQuestions(categoryId: String): Flow<List<Event>> {
-        return dao.getRandomQuestions(categoryId)
+        } catch (e: Exception) {
+            println("Erro ao processar questions.json: $e")
+            throw e
+        }
     }
 }
