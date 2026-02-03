@@ -52,7 +52,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import caririfest.composeapp.generated.resources.Res
 import caririfest.composeapp.generated.resources.calendar
-import caririfest.composeapp.generated.resources.caririfestlogo1
 import caririfest.composeapp.generated.resources.image_break
 import caririfest.composeapp.generated.resources.location_pin
 import caririfest.composeapp.generated.resources.mascot_sf
@@ -76,11 +75,10 @@ fun FeedScreen() {
     val pagerState = rememberPagerState(pageCount = { uiStateHotFilter.size })
     val scope = rememberCoroutineScope()
 
-
     LaunchedEffect(
         pagerState.isScrollInProgress
     ) {
-        if (!pagerState.isScrollInProgress && pagerState.pageCount > 0) {
+        if (!pagerState.isScrollInProgress) {
             delay(6000)
             val nextPage = (pagerState.currentPage + 1) % pagerState.pageCount
             scope.launch {

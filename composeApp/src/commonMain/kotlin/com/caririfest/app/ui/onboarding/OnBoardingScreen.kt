@@ -57,24 +57,23 @@ fun OnBoardingScreen(
 ) {
     val pagerState = rememberPagerState(pageCount = { 3 })
     val scope = rememberCoroutineScope()
-    val context =
 
-        LaunchedEffect(pagerState.isScrollInProgress) {
-            if (!pagerState.isScrollInProgress) {
-                delay(4000)
+    LaunchedEffect(pagerState.isScrollInProgress) {
+        if (!pagerState.isScrollInProgress) {
+            delay(4000)
 
-                val nextPage = (pagerState.currentPage + 1) % pagerState.pageCount
-                scope.launch {
-                    pagerState.animateScrollToPage(
-                        page = nextPage,
-                        animationSpec = tween(
-                            durationMillis = 1000,
-                            easing = FastOutSlowInEasing
-                        )
+            val nextPage = (pagerState.currentPage + 1) % pagerState.pageCount
+            scope.launch {
+                pagerState.animateScrollToPage(
+                    page = nextPage,
+                    animationSpec = tween(
+                        durationMillis = 1000,
+                        easing = FastOutSlowInEasing
                     )
-                }
+                )
             }
         }
+    }
 
     Box(
         modifier = Modifier
