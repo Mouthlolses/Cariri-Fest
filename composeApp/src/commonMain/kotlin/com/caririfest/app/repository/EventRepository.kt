@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.flow
 interface EventRepository {
     fun getAll(): Flow<List<Event>>
 
+    fun getById(id: String): Flow<Event?>
+
     suspend fun refresh()
 }
 
@@ -18,9 +20,12 @@ class EventRepositoryImpl(
     private val dao: EventDao
 ) : EventRepository {
 
-    override fun getAll(): Flow<List<Event>> = flow {
+    override fun getAll(): Flow<List<Event>> =
+        dao.getAll()
+
+    override fun getById(id: String): Flow<Event?> = flow {
         refresh()
-        emitAll(dao.getAll())
+        emitAll(dao.getById(id))
     }
 
     override suspend fun refresh() {

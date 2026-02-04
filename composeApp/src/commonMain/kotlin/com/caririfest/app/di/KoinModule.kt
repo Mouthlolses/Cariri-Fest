@@ -1,5 +1,6 @@
 package com.caririfest.app.di
 
+import co.touchlab.kermit.Logger
 import com.caririfest.app.data.EventService
 import com.caririfest.app.data.EventServiceImpl
 import com.caririfest.app.data.database.AppDatabase
@@ -8,6 +9,7 @@ import com.caririfest.app.network.KtoAPIClient
 import com.caririfest.app.repository.EventRepository
 import com.caririfest.app.repository.EventRepositoryImpl
 import com.caririfest.app.ui.home.feed.FeedViewModel
+import com.caririfest.app.ui.home.feed.detail.EventDetailViewModel
 import io.ktor.client.HttpClient
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
@@ -19,16 +21,17 @@ expect val targetModule: Module
 
 val appModule = module {
 
-    viewModel { FeedViewModel(get()) }
+    viewModel { FeedViewModel(get(),get()) }
 
-//    viewModel { GameViewModel(get()) }
-//    viewModel { LoginViewModel(get()) }
-//    viewModel { RegisterViewModel() }
-//    viewModel { ProfileViewModel(get()) }
-//    viewModel { CategoryDetailViewModel(get()) }
-//    viewModel { RankingViewModel(get()) }
-//    viewModel { SplashViewModel(get(), get()) }
-//
+    viewModel {
+        EventDetailViewModel(
+            repository = get(),
+            savedStateHandle = get()
+        )
+    }
+
+    single { Logger.withTag("CaririFestAppLogger") }
+
 }
 
 val dataModule = module {

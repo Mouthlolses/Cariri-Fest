@@ -39,6 +39,9 @@ kotlin {
 
             // Koin
             implementation(libs.koin.android)
+
+            implementation(libs.coil.network.okhttp)
+
         }
 
         commonMain.dependencies {
@@ -61,7 +64,6 @@ kotlin {
             // Coil
             implementation(libs.coil.compose.core)
             implementation(libs.coil.compose)
-            implementation(libs.coil.network.okhttp)
             implementation(libs.coil)
 
             // Ktor
@@ -83,6 +85,9 @@ kotlin {
 
             implementation(libs.androidx.room.runtime)
             implementation(libs.sqlite.bundled)
+
+            //Logger
+            implementation(libs.kermit)
         }
 
         iosMain.dependencies {

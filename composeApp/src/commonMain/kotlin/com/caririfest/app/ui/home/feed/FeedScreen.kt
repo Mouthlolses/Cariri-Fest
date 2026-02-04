@@ -66,11 +66,11 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FeedScreen() {
-
+fun FeedScreen(
+    onEventClick: (String) -> Unit
+) {
     val viewModel: FeedViewModel = koinViewModel()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val categories by viewModel.categories.collectAsStateWithLifecycle()
     val uiStateHotFilter = state.events.filter { it.hot }
     val pagerState = rememberPagerState(pageCount = { uiStateHotFilter.size })
     val scope = rememberCoroutineScope()
@@ -202,7 +202,7 @@ fun FeedScreen() {
                                         .fillMaxWidth()
                                         .clickable(
                                             onClick = {
-//                                                navController.navigate("newsDetailsScreen/${event.id}")
+                                                onEventClick(event.id)
                                             },
                                             enabled = true
                                         )
@@ -346,7 +346,7 @@ fun FeedScreen() {
                             contentPadding = PaddingValues(horizontal = 16.dp),
                             horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            items(categories) { value ->
+                            items(state.categories) { value ->
                                 CategoryCard(
                                     icon = value.image,
                                     title = value.nameCategories
@@ -393,7 +393,7 @@ fun FeedScreen() {
                                     location = doc.location,
                                     date = doc.date,
                                     onClick = {
-//                                        navController.navigate("newsDetailsScreen/${doc.id}")
+                                        onEventClick(doc.id)
                                     }
                                 )
                             }

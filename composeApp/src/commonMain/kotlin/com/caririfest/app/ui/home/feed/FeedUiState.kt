@@ -4,6 +4,7 @@ import com.caririfest.app.model.Event
 
 data class FeedUiState(
     val events: List<Event> = emptyList(),
+    val categories: List<Categories> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null
 )

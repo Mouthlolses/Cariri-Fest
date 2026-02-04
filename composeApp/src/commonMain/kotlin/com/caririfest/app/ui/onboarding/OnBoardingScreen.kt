@@ -151,9 +151,6 @@ fun OnBoardingScreen(
                 elevation = ButtonDefaults.buttonElevation(4.dp),
                 onClick = {
                     onFinish()
-                    scope.launch {
-
-                    }
                 },
                 text = "Vamos lá"
             )

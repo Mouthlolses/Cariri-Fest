@@ -71,13 +71,11 @@ fun HomeNavHost(
 
         composable<HomeRoutes.Feed> {
             FeedScreen(
-//                onEventClick = { eventId ->
-//
-//                    // navegação GLOBAL
-//                    rootNavController.navigate(
-//                        HomeRoutes.EventDetail(eventId)
-//                    )
-//                }
+               onEventClick = { eventId ->
+                   homeNavController.navigate(
+                        HomeRoutes.EventDetail(eventId)
+                    )
+              }
             )
         }
 
@@ -93,13 +91,8 @@ fun HomeNavHost(
             RadarScreen()
         }
 
-        composable<HomeRoutes.EventDetail> { backStackEntry ->
-
-            val args = backStackEntry.toRoute<HomeRoutes.EventDetail>()
-
-            EventDetailScreen(
-//                eventId = args.eventId
-            )
+        composable<HomeRoutes.EventDetail> {
+            EventDetailScreen()
         }
     }
 }
