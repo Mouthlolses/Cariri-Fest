@@ -50,10 +50,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun OnBoardingScreen(
-    onFinish: () -> Unit = {}
+    viewModel: OnBoardingViewModel = koinViewModel(),
+    onFinish: () -> Unit
 ) {
     val pagerState = rememberPagerState(pageCount = { 3 })
     val scope = rememberCoroutineScope()
@@ -150,6 +152,7 @@ fun OnBoardingScreen(
                 ),
                 elevation = ButtonDefaults.buttonElevation(4.dp),
                 onClick = {
+                    viewModel.finishOnboarding()
                     onFinish()
                 },
                 text = "Vamos lá"

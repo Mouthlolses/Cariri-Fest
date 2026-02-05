@@ -18,12 +18,6 @@ class FeedViewModel(
     logger: Logger
 ) : ViewModel() {
 
-    init {
-        viewModelScope.launch {
-            eventRepository.refresh()
-        }
-    }
-
     private val defaultCategories = listOf(
         Categories(
             id = 1,
@@ -85,7 +79,7 @@ class FeedViewModel(
         }
         .stateIn(
             viewModelScope,
-            SharingStarted.Lazily,
+            SharingStarted.Eagerly,
             FeedUiState(
                 isLoading = true,
                 categories = defaultCategories

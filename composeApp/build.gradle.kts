@@ -88,6 +88,10 @@ kotlin {
 
             //Logger
             implementation(libs.kermit)
+
+            //multiplatform settings
+            implementation(libs.multiplatform.settings)
+            implementation(libs.multiplatform.settings.no.arg)
         }
 
         iosMain.dependencies {

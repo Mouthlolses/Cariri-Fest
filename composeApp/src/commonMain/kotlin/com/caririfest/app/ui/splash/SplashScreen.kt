@@ -27,21 +27,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import caririfest.composeapp.generated.resources.Res
 import caririfest.composeapp.generated.resources.caririfestlogo1
+import com.caririfest.app.helper.OnboardingManager
+import com.caririfest.app.navigation.root.RootRoutes
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
 
 
-@Preview(showBackground = true)
 @Composable
-fun SplashScreen(
-    onNavigate: () -> Unit = {}
-) {
+fun SplashScreen() {
     var visible by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         visible = true
-        delay(1400)
-        onNavigate()
     }
 
     val scale by animateFloatAsState(

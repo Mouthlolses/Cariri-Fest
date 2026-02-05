@@ -5,43 +5,56 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.caririfest.app.navigation.RootViewModel
+import com.caririfest.app.navigation.StartDestination
 import com.caririfest.app.ui.home.HomeScreen
 import com.caririfest.app.ui.onboarding.OnBoardingScreen
 import com.caririfest.app.ui.splash.SplashScreen
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun AppNavHost(
-    navController: NavHostController = rememberNavController(),
-    onChangeColor: (Long) -> Unit = {}
-) {
+fun AppNavHost() {
 
-    NavHost(
-        navController = navController,
-        startDestination = RootRoutes.Splash
-    ) {
+    val rootViewModel: RootViewModel = koinViewModel()
 
-        composable<RootRoutes.Splash> {
-            SplashScreen(
-                onNavigate = {
-                    navController.navigate(RootRoutes.OnBoarding) {
-                        popUpTo(RootRoutes.Splash) { inclusive = true }
-                    }
+    when(val destination = rootViewModel.startDestination) {
+
+        StartDestination.Loading -> {
+            // Splash REAL (só UI)
+            SplashScreen()
+        }
+
+        else -> {
+
+            val navController = rememberNavController()
+
+            NavHost(
+                navController = navController,
+                startDestination = destination.toRoute()
+            ) {
+
+                composable<RootRoutes.OnBoarding> {
+                    OnBoardingScreen(
+                        onFinish = {
+                            navController.navigate(RootRoutes.Home) {
+                                popUpTo(0)
+                            }
+                        }
+                    )
                 }
-            )
-        }
 
-        composable<RootRoutes.OnBoarding> {
-            OnBoardingScreen(
-                onFinish = {
-                    navController.navigate(RootRoutes.Home) {
-                        popUpTo(RootRoutes.OnBoarding) { inclusive = true }
-                    }
+                composable<RootRoutes.Home> {
+                    HomeScreen(navController)
                 }
-            )
+            }
         }
+    }
+}
 
-        composable<RootRoutes.Home> {
-            HomeScreen(navController)
-        }
+fun StartDestination.toRoute(): Any {
+    return when(this) {
+        StartDestination.Home -> RootRoutes.Home
+        StartDestination.OnBoarding -> RootRoutes.OnBoarding
+        else -> RootRoutes.Home
     }
 }
