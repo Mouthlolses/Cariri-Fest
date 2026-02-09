@@ -42,6 +42,7 @@ import caririfest.composeapp.generated.resources.Res
 import caririfest.composeapp.generated.resources.calendar
 import caririfest.composeapp.generated.resources.caririfestlogo1
 import caririfest.composeapp.generated.resources.ic_loupe
+import caririfest.composeapp.generated.resources.left_arrow
 import caririfest.composeapp.generated.resources.location_pin
 import caririfest.composeapp.generated.resources.right_arrow
 import coil3.compose.AsyncImage
@@ -54,7 +55,9 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EventDetailScreen() {
+fun EventDetailScreen(
+    onBackStackEntry: () -> Boolean
+) {
 
     val viewModel: EventDetailViewModel = koinViewModel()
 
@@ -62,7 +65,6 @@ fun EventDetailScreen() {
 
     val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
-
 
     when (uiState) {
         EventDetailUiState.Loading -> {
@@ -108,9 +110,9 @@ fun EventDetailScreen() {
                                 )
                             },
                             navigationIcon = {
-                                IconButton(onClick = { }) {
+                                IconButton(onClick = { onBackStackEntry() }) {
                                     Icon(
-                                        painter = painterResource(Res.drawable.right_arrow),
+                                        painter = painterResource(Res.drawable.left_arrow),
                                         contentDescription = "back",
                                         tint = Color(0xFFFF5733)
                                     )

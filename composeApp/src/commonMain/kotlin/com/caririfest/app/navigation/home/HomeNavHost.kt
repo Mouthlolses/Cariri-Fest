@@ -30,7 +30,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.toRoute
 import caririfest.composeapp.generated.resources.Res
 import caririfest.composeapp.generated.resources.ic_loupe
 import caririfest.composeapp.generated.resources.icon_home
@@ -92,7 +91,11 @@ fun HomeNavHost(
         }
 
         composable<HomeRoutes.EventDetail> {
-            EventDetailScreen()
+            EventDetailScreen(
+                onBackStackEntry = {
+                    homeNavController.popBackStack()
+                }
+            )
         }
     }
 }

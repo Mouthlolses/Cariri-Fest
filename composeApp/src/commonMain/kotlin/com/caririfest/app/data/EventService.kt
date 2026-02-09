@@ -5,8 +5,6 @@ import com.caririfest.app.network.dto.EventResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
-import io.ktor.client.request.parameter
-import kotlinx.serialization.json.Json
 
 interface EventService {
     suspend fun getAll(): List<Event>
@@ -19,9 +17,7 @@ class EventServiceImpl(
         return runCatching {
             val response: EventResponse =
                 httpClient
-                    .get("projects/eventapp-d6adb/databases/(default)/documents/event") {
-
-                    }
+                    .get("projects/eventapp-d6adb/databases/(default)/documents/event")
                     .body()
             response.documents.map {
                 Event(
