@@ -90,6 +90,10 @@ fun HomeNavHost(
             RadarScreen()
         }
 
+        composable<HomeRoutes.SeeAllScreen> {
+            //SeeAllScreen
+        }
+
         composable<HomeRoutes.EventDetail> {
             EventDetailScreen(
                 onBackStackEntry = {

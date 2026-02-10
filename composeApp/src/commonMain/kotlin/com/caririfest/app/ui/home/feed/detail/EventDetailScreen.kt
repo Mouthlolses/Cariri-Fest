@@ -114,6 +114,8 @@ fun EventDetailScreen(
                                     Icon(
                                         painter = painterResource(Res.drawable.left_arrow),
                                         contentDescription = "back",
+                                        modifier = Modifier
+                                            .size(26.dp),
                                         tint = Color(0xFFFF5733)
                                     )
                                 }

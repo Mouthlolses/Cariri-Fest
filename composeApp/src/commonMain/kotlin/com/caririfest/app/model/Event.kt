@@ -2,7 +2,9 @@ package com.caririfest.app.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.serialization.Serializable
 
+@Serializable
 @Entity(tableName = "events")
 data class Event(
     @PrimaryKey val id: String,
