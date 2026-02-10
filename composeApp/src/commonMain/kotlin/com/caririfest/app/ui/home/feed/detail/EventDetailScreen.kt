@@ -44,7 +44,6 @@ import caririfest.composeapp.generated.resources.caririfestlogo1
 import caririfest.composeapp.generated.resources.ic_loupe
 import caririfest.composeapp.generated.resources.left_arrow
 import caririfest.composeapp.generated.resources.location_pin
-import caririfest.composeapp.generated.resources.right_arrow
 import coil3.compose.AsyncImage
 import com.caririfest.app.components.BuyTicketBottomBar
 import com.caririfest.app.components.ShareButton

@@ -37,6 +37,7 @@ import caririfest.composeapp.generated.resources.icon_maps
 import caririfest.composeapp.generated.resources.icon_world
 import com.caririfest.app.ui.home.feed.FeedScreen
 import com.caririfest.app.ui.home.feed.detail.EventDetailScreen
+import com.caririfest.app.ui.home.feed.seeall.SeeAllScreen
 import com.caririfest.app.ui.home.map.MapsScreen
 import com.caririfest.app.ui.home.radar.RadarScreen
 import com.caririfest.app.ui.home.search.SearchScreen
@@ -70,11 +71,11 @@ fun HomeNavHost(
 
         composable<HomeRoutes.Feed> {
             FeedScreen(
-               onEventClick = { eventId ->
-                   homeNavController.navigate(
+                onEventClick = { eventId ->
+                    homeNavController.navigate(
                         HomeRoutes.EventDetail(eventId)
                     )
-              }
+                }
             )
         }
 
@@ -91,7 +92,7 @@ fun HomeNavHost(
         }
 
         composable<HomeRoutes.SeeAllScreen> {
-            //SeeAllScreen
+            SeeAllScreen()
         }
 
         composable<HomeRoutes.EventDetail> {
