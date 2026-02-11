@@ -45,8 +45,8 @@ import caririfest.composeapp.generated.resources.ic_loupe
 import caririfest.composeapp.generated.resources.left_arrow
 import caririfest.composeapp.generated.resources.location_pin
 import coil3.compose.AsyncImage
-import com.caririfest.app.components.BuyTicketBottomBar
-import com.caririfest.app.components.ShareButton
+import com.caririfest.app.ui.components.BuyTicketBottomBar
+import com.caririfest.app.ui.components.ShareButton
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel

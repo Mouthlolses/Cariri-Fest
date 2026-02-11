@@ -56,9 +56,10 @@ import caririfest.composeapp.generated.resources.image_break
 import caririfest.composeapp.generated.resources.location_pin
 import caririfest.composeapp.generated.resources.mascot_sf
 import coil3.compose.SubcomposeAsyncImage
-import com.caririfest.app.components.CategoryCard
-import com.caririfest.app.components.EventCard
-import com.caririfest.app.components.LoadingIndicatorLayout
+import com.caririfest.app.ui.components.AdsCard
+import com.caririfest.app.ui.components.CategoryCard
+import com.caririfest.app.ui.components.EventCard
+import com.caririfest.app.ui.components.LoadingIndicatorLayout
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
@@ -398,6 +399,9 @@ fun FeedScreen(
                                 )
                             }
                         }
+                    }
+                    item {
+                        AdsCard()
                     }
 //                    item {
 //                        if (recentEvents.isNotEmpty()) {

@@ -1,4 +1,4 @@
-package com.caririfest.app.components
+package com.caririfest.app.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row

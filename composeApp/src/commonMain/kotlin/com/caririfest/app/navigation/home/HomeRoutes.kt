@@ -23,7 +23,5 @@ sealed interface HomeRoutes {
     ) : HomeRoutes
 
     @Serializable
-    data class SeeAllScreen(
-        val events: List<Event>
-    ) : HomeRoutes
+    data object SeeAllScreen: HomeRoutes
 }

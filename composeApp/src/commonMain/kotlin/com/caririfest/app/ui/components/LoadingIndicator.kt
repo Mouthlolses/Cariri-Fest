@@ -1,4 +1,4 @@
-package com.caririfest.app.components
+package com.caririfest.app.ui.components
 
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LoadingIndicator

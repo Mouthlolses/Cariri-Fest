@@ -1,4 +1,4 @@
-package com.caririfest.app.components
+package com.caririfest.app.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -11,10 +11,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,7 +28,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import caririfest.composeapp.generated.resources.Res
-import caririfest.composeapp.generated.resources.icon_maps
 import caririfest.composeapp.generated.resources.image_break
 import coil3.compose.SubcomposeAsyncImage
 import org.jetbrains.compose.resources.painterResource
@@ -47,7 +46,7 @@ fun EventCard(
     val cardWidth = 280.dp
     val imageRatio = 16f / 9f
 
-    Card(
+    ElevatedCard(
         modifier = Modifier
             .width(cardWidth)
             .clickable { onClick() },

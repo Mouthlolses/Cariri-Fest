@@ -45,7 +45,7 @@ import caririfest.composeapp.generated.resources.background_yellow
 import caririfest.composeapp.generated.resources.person_11
 import caririfest.composeapp.generated.resources.person_2
 import caririfest.composeapp.generated.resources.person_3
-import com.caririfest.app.components.ButtonAllCustomized
+import com.caririfest.app.ui.components.ButtonAllCustomized
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
