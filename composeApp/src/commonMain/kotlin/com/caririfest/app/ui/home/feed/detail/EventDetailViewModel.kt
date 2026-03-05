@@ -24,7 +24,7 @@ class EventDetailViewModel(
 
     val uiState: StateFlow<EventDetailUiState> =
         repository.getById(route.eventId)
-            .map<Event?, EventDetailUiState> { event ->
+            .map { event ->
 
                 if (event != null) {
                     EventDetailUiState.Success(event)

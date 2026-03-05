@@ -1,6 +1,7 @@
 package com.caririfest.app.navigation.home
 
 import com.caririfest.app.model.Event
+import io.ktor.events.Events
 import kotlinx.serialization.Serializable
 
 sealed interface HomeRoutes {
@@ -23,5 +24,7 @@ sealed interface HomeRoutes {
     ) : HomeRoutes
 
     @Serializable
-    data object SeeAllScreen: HomeRoutes
+    data class SeeAllScreen(
+        val events: List<String>
+    ): HomeRoutes
 }

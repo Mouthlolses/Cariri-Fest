@@ -75,6 +75,11 @@ fun HomeNavHost(
                     homeNavController.navigate(
                         HomeRoutes.EventDetail(eventId)
                     )
+                },
+                onEverythingClick = { eventsIds ->
+                    homeNavController.navigate(
+                        HomeRoutes.SeeAllScreen(eventsIds)
+                    )
                 }
             )
         }
@@ -92,7 +97,13 @@ fun HomeNavHost(
         }
 
         composable<HomeRoutes.SeeAllScreen> {
-            SeeAllScreen()
+            SeeAllScreen(
+                onEventClick = { eventId ->
+                    homeNavController.navigate(
+                        HomeRoutes.EventDetail(eventId)
+                    )
+                }
+            )
         }
 
         composable<HomeRoutes.EventDetail> {

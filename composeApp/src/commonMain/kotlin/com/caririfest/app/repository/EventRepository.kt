@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.onStart
 interface EventRepository {
     fun getAll(): Flow<List<Event>>
 
+    fun getAllHandle(ids: List<String>): Flow<List<Event>>
+
     fun getById(id: String): Flow<Event?>
 
     suspend fun refresh()
@@ -25,6 +27,16 @@ class EventRepositoryImpl(
     override fun getAll(): Flow<List<Event>> = dao.getAll()
         .onStart {
             refresh()
+            emitAll(dao.getAll())
+        }
+        .catch { e ->
+            throw e
+        }
+
+    override fun getAllHandle(ids: List<String>): Flow<List<Event>> = dao.getAllHandle(ids)
+        .onStart {
+            refresh()
+            emitAll(dao.getAllHandle(ids))
         }
         .catch { e ->
             throw e

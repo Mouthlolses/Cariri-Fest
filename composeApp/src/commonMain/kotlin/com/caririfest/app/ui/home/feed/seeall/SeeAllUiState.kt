@@ -4,6 +4,6 @@ import com.caririfest.app.model.Event
 
 sealed interface SeeAllUiState {
     object Loading : SeeAllUiState
-    data class Success(val event: Event) : SeeAllUiState
+    data class Success(val event: List<Event>) : SeeAllUiState
     object Error : SeeAllUiState
 }

@@ -68,7 +68,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FeedScreen(
-    onEventClick: (String) -> Unit
+    onEventClick: (String) -> Unit,
+    onEverythingClick: (List<String>) -> Unit
 ) {
     val viewModel: FeedViewModel = koinViewModel()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -372,7 +373,11 @@ fun FeedScreen(
                                 modifier = Modifier.weight(1f)
                             )
                             TextButton(
-                                onClick = {},
+                                onClick = {
+                                    onEverythingClick(
+                                        state.events.map { it.id }
+                                    )
+                                },
                                 contentPadding = PaddingValues(0.dp)
                             ) {
                                 Text(
