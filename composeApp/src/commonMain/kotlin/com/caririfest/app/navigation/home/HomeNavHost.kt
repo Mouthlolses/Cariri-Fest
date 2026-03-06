@@ -102,6 +102,9 @@ fun HomeNavHost(
                     homeNavController.navigate(
                         HomeRoutes.EventDetail(eventId)
                     )
+                },
+                onBackStackEntry = {
+                    homeNavController.popBackStack()
                 }
             )
         }

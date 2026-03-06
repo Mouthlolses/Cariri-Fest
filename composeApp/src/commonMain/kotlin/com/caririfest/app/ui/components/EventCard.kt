@@ -25,6 +25,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import caririfest.composeapp.generated.resources.Res
@@ -36,6 +37,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun EventCard(
     cardColor: Color = Color.White,
+    cardWidth: Dp = 280.dp,
     cardElevation: CardElevation = CardDefaults.cardElevation(4.dp),
     imageUrl: String = "https://discovery-next.svc.sympla.com.br/_next/image?url=https%3A%2F%2Fimages.sympla.com.br%2F696526d1e67b6-xs.jpg&w=640&q=75",
     title: String = "Festa Junina",
@@ -43,7 +45,6 @@ fun EventCard(
     date: String = "12/12/1999",
     onClick: () -> Unit = {}
 ) {
-    val cardWidth = 280.dp
     val imageRatio = 16f / 9f
 
     ElevatedCard(
