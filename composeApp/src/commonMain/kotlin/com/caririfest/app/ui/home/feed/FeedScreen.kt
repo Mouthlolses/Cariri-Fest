@@ -408,53 +408,54 @@ fun FeedScreen(
                     item {
                         AdsCard()
                     }
-//                    item {
-//                        if (recentEvents.isNotEmpty()) {
-//                            Row(
-//                                modifier = Modifier
-//                                    .fillMaxWidth()
-//                                    .padding(horizontal = 18.dp)
-//                                    .padding(top = 18.dp, bottom = 4.dp),
-//                                verticalAlignment = Alignment.CenterVertically
-//                            ) {
-//                                Text(
-//                                    text = "Visto recentemente",
-//                                    fontFamily = permanentMarker,
-//                                    fontWeight = FontWeight.Medium,
-//                                    fontSize = 22.sp,
-//                                    color = Color(0xFF1F2937),
-//                                    modifier = Modifier.weight(1f)
-//                                )
-//                                TextButton(
-//                                    onClick = { },
-//                                    contentPadding = PaddingValues(0.dp)
-//                                ) {
-//                                    Text(
-//                                        text = "Ver tudo",
-//                                        fontSize = 14.sp,
-//                                        fontWeight = FontWeight.Medium,
-//                                        color = Color(0xFF2563EB)
-//                                    )
-//                                }
-//                            }
-//                            LazyRow(
-//                                contentPadding = PaddingValues(horizontal = 16.dp),
-//                                horizontalArrangement = Arrangement.spacedBy(16.dp)
-//                            ) {
-//                                items(recentEvents) { doc ->
-//                                    EventCard(
-//                                        imageUrl = doc.img,
-//                                        title = doc.title,
-//                                        location = doc.location,
-//                                        date = doc.date,
-//                                        onClick = {
-//                                            navController.navigate("newsDetailsScreen/${doc.id}")
-//                                        }
-//                                    )
-//                                }
-//                            }
-//                        }
-//                    }
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 18.dp)
+                                .padding(top = 8.dp, bottom = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Favoritos",
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 22.sp,
+                                color = Color(0xFF1F2937),
+                                modifier = Modifier.weight(1f)
+                            )
+                            TextButton(
+                                onClick = {
+                                    onEverythingClick(
+                                        state.events.map { it.id }
+                                    )
+                                },
+                                contentPadding = PaddingValues(0.dp)
+                            ) {
+                                Text(
+                                    text = "Ver tudo",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = Color(0xFF2563EB)
+                                )
+                            }
+                        }
+                        LazyRow(
+                            contentPadding = PaddingValues(horizontal = 16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            items(state.events.filter { it.favorite }) { doc ->
+                                EventCard(
+                                    imageUrl = doc.img,
+                                    title = doc.title,
+                                    location = doc.location,
+                                    date = doc.date,
+                                    onClick = {
+                                        onEventClick(doc.id)
+                                    }
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
