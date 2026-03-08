@@ -29,7 +29,6 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -309,8 +308,8 @@ fun EventDetailScreen(
 
                         Row(
                             modifier = Modifier
-                                .padding(start = 16.dp),
-                            horizontalArrangement = Arrangement.Center,
+                                .padding(start = 16.dp)
+                                .fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
@@ -320,15 +319,13 @@ fun EventDetailScreen(
                                 modifier = Modifier.size(18.dp)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
-                            TextButton(
-                                onClick = {}
-                            ) {
-                                Text(
-                                    text = (uiState as EventDetailUiState.Success).event.location,
-                                    style = typography.bodyMedium,
-                                    color = Color.Black
-                                )
-                            }
+
+                            Text(
+                                text = (uiState as EventDetailUiState.Success).event.location,
+                                style = typography.bodyMedium,
+                                color = Color.Black
+                            )
+
                         }
                         Spacer(modifier = Modifier.height(6.dp))
                         HorizontalDivider()
