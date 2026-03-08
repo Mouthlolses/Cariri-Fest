@@ -3,12 +3,14 @@ package com.caririfest.app.ui.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
@@ -30,6 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import caririfest.composeapp.generated.resources.Res
 import caririfest.composeapp.generated.resources.image_break
+import caririfest.composeapp.generated.resources.outlined_calendar
+import caririfest.composeapp.generated.resources.outlined_location_pin
 import coil3.compose.SubcomposeAsyncImage
 import org.jetbrains.compose.resources.painterResource
 
@@ -99,23 +103,46 @@ fun EventCard(
 
                 Spacer(modifier = Modifier.height(6.dp))
 
-                Text(
-                    text = location,
-                    fontSize = 12.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    color = Color.Gray
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(Res.drawable.outlined_calendar),
+                        contentDescription = "date",
+                        tint = Color.Gray,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+
+                    Text(
+                        text = date,
+                        fontSize = 12.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = Color.Gray
+                    )
+
+                }
+                Spacer(modifier = Modifier.height(6.dp))
+
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(Res.drawable.outlined_location_pin),
+                        contentDescription = "Place",
+                        tint = Color.Red,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = location,
+                        fontSize = 12.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = Color.Gray
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                Text(
-                    text = date,
-                    fontSize = 12.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    color = Color.Gray
-                )
             }
         }
     }

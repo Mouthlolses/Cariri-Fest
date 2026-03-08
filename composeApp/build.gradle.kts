@@ -42,6 +42,10 @@ kotlin {
 
             implementation(libs.coil.network.okhttp)
 
+            implementation(libs.coil.compose.core)
+            implementation(libs.coil.compose)
+            implementation(libs.coil)
+
         }
 
         commonMain.dependencies {

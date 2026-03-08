@@ -38,8 +38,8 @@ fun CategoryCard(
 ) {
     Card(
         modifier = modifier
-            .width(150.dp)
-            .size(130.dp)
+            .width(130.dp)
+            .size(120.dp)
             .clickable(enabled = false, onClick = onClick),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(4.dp),

@@ -37,7 +37,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,17 +53,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import caririfest.composeapp.generated.resources.Res
-import caririfest.composeapp.generated.resources.calendar
 import caririfest.composeapp.generated.resources.image_break
-import caririfest.composeapp.generated.resources.location_pin
 import caririfest.composeapp.generated.resources.mascot_sf
+import caririfest.composeapp.generated.resources.outlined_calendar
+import caririfest.composeapp.generated.resources.outlined_location_pin
 import coil3.compose.SubcomposeAsyncImage
 import com.caririfest.app.ui.components.AdsCard
 import com.caririfest.app.ui.components.CategoryCard
 import com.caririfest.app.ui.components.EventCard
 import com.caririfest.app.ui.components.LoadingIndicatorLayout
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -75,7 +76,16 @@ fun FeedScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val uiStateHotFilter = state.events.filter { it.hot }
     val pagerState = rememberPagerState(pageCount = { uiStateHotFilter.size })
-    val scope = rememberCoroutineScope()
+
+    var selectedCity by remember { mutableStateOf("Juazeiro do Norte") }
+    val cities = listOf(
+        "Juazeiro do Norte",
+        "Crato",
+        "Barbalha"
+    )
+    val filteredEvents = state.events.filter {
+        it.location == selectedCity
+    }
 
     LaunchedEffect(
         pagerState.isScrollInProgress
@@ -83,15 +93,13 @@ fun FeedScreen(
         if (!pagerState.isScrollInProgress) {
             delay(6000)
             val nextPage = (pagerState.currentPage + 1) % pagerState.pageCount
-            scope.launch {
-                pagerState.animateScrollToPage(
-                    page = nextPage,
-                    animationSpec = tween(
-                        durationMillis = 1000,
-                        easing = FastOutSlowInEasing
-                    )
+            pagerState.animateScrollToPage(
+                page = nextPage,
+                animationSpec = tween(
+                    durationMillis = 1000,
+                    easing = FastOutSlowInEasing
                 )
-            }
+            )
         }
     }
 
@@ -261,9 +269,9 @@ fun FeedScreen(
                                         Spacer(modifier = Modifier.height(12.dp))
                                         Row(verticalAlignment = Alignment.CenterVertically) {
                                             Icon(
-                                                painter = painterResource(Res.drawable.calendar),
+                                                painter = painterResource(Res.drawable.outlined_calendar),
                                                 contentDescription = "date",
-                                                tint = Color.DarkGray,
+                                                tint = Color.Gray,
                                                 modifier = Modifier.size(18.dp)
                                             )
                                             Spacer(modifier = Modifier.width(4.dp))
@@ -278,7 +286,7 @@ fun FeedScreen(
                                         Spacer(modifier = Modifier.height(2.dp))
                                         Row(verticalAlignment = Alignment.CenterVertically) {
                                             Icon(
-                                                painter = painterResource(Res.drawable.location_pin),
+                                                painter = painterResource(Res.drawable.outlined_location_pin),
                                                 contentDescription = "Place",
                                                 tint = Color.Red,
                                                 modifier = Modifier.size(18.dp)
@@ -366,7 +374,7 @@ fun FeedScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "Em Alta",
+                                text = "Em Alta no Cariri",
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 22.sp,
                                 color = Color(0xFF1F2937),
@@ -413,22 +421,51 @@ fun FeedScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 18.dp)
+                                .background(Color(0xFFE5E7EB), RoundedCornerShape(30.dp))
+                                .padding(4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+
+                            cities.forEach { city ->
+
+                                val selected = city == selectedCity
+
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .clip(RoundedCornerShape(30.dp))
+                                        .background(if (selected) Color.White else Color.Transparent)
+                                        .clickable { selectedCity = city }
+                                        .padding(vertical = 10.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = city,
+                                        fontSize = 13.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = if (selected) Color.Black else Color.Gray,
+                                    )
+                                }
+                            }
+                        }
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 18.dp)
                                 .padding(top = 8.dp, bottom = 4.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
+
                             Text(
-                                text = "Favoritos",
+                                text = selectedCity,
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 22.sp,
                                 color = Color(0xFF1F2937),
                                 modifier = Modifier.weight(1f)
                             )
                             TextButton(
-                                onClick = {
-                                    onEverythingClick(
-                                        state.events.map { it.id }
-                                    )
-                                },
+                                onClick = { },
                                 contentPadding = PaddingValues(0.dp)
                             ) {
                                 Text(
@@ -443,7 +480,9 @@ fun FeedScreen(
                             contentPadding = PaddingValues(horizontal = 16.dp),
                             horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            items(state.events.filter { it.favorite }) { doc ->
+                            items(
+                                filteredEvents
+                            ) { doc ->
                                 EventCard(
                                     imageUrl = doc.img,
                                     title = doc.title,

@@ -41,16 +41,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import caririfest.composeapp.generated.resources.Res
 import caririfest.composeapp.generated.resources.caririfestlogo1
+import caririfest.composeapp.generated.resources.flat_map
 import caririfest.composeapp.generated.resources.image_break
 import caririfest.composeapp.generated.resources.left_arrow
 import caririfest.composeapp.generated.resources.outlined_calendar
 import caririfest.composeapp.generated.resources.outlined_location_pin
-import caririfest.composeapp.generated.resources.outlined_map
 import coil3.compose.SubcomposeAsyncImage
+import com.caririfest.app.share.buildShareText
+import com.caririfest.app.share.shareEvent
 import com.caririfest.app.ui.components.BuyTicketBottomBar
 import com.caririfest.app.ui.components.ShareButton
 import com.caririfest.app.ui.components.Tag
@@ -73,6 +76,7 @@ fun EventDetailScreen(
     val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()
+
 
     val tagList = List(20) { }
 
@@ -202,39 +206,13 @@ fun EventDetailScreen(
                                 .align(Alignment.BottomCenter)
                                 .offset(y = 24.dp),
                             onClick = {
-                                scope.launch {
-                                    val text = buildString {
-                                        appendLine("🎉 ${(uiState as EventDetailUiState.Success).event.title}")
-                                        appendLine()
-                                        appendLine("📍Local: ${(uiState as EventDetailUiState.Success).event.location}")
-                                        appendLine()
-                                        appendLine("📅 Data: ${(uiState as EventDetailUiState.Success).event.date}")
-                                        appendLine()
-                                        appendLine("📲 Descubra mais eventos no Cariri com o app Cariri Fest!")
-                                        appendLine()
-                                        appendLine(
-                                            "👉 Disponível na Google Play " +
-                                                    " Baixe grátis: https://play.google.com/store/apps/details?id=com.caririfest.app_jnproject"
-                                        )
-                                    }
-//
-//                                    val request = ImageRequest.Builder(context)
-//                                        .data(event.fields.img.stringValue)
-//                                        .allowHardware(false)
-//                                        .build()
-//
-//                                    val result = withContext(Dispatchers.IO) {
-//                                        imageLoader.execute(request)
-//                                    }
-//
-//                                    val drawable = result.drawable
-//                                    val bitmap = (drawable as BitmapDrawable).bitmap
-//
-//                                    withContext(Dispatchers.Main) {
-//                                        shareContent(context, bitmap, text)
-//                                    }
+                                val event = (uiState as EventDetailUiState.Success).event
+                                val text = buildShareText(event)
 
-                                }
+                                shareEvent(
+                                    imageUrl = event.img,
+                                    text = text
+                                )
                             }
                         )
                     }
@@ -284,24 +262,26 @@ fun EventDetailScreen(
                             Text(
                                 text = (uiState as EventDetailUiState.Success).event.date,
                                 style = typography.bodyMedium,
-                                color = Color.Black
+                                color = Color.Black,
+                                maxLines = 1
                             )
 
                             Spacer(modifier = Modifier.weight(1f))
 
                             Icon(
-                                painter = painterResource(Res.drawable.outlined_map),
+                                painter = painterResource(Res.drawable.flat_map),
                                 contentDescription = "location-map",
-                                tint = Color.DarkGray,
+                                tint = Color.Red,
                                 modifier = Modifier.size(18.dp)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 text = "Veja no mapa",
                                 style = typography.bodyMedium,
-                                color = Color.Black
+                                color = Color(0xFF1E88E5),
+                                textDecoration = TextDecoration.Underline,
+                                maxLines = 1
                             )
-
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))
@@ -323,11 +303,12 @@ fun EventDetailScreen(
                             Text(
                                 text = (uiState as EventDetailUiState.Success).event.location,
                                 style = typography.bodyMedium,
-                                color = Color.Black
+                                color = Color.Black,
+                                maxLines = 1
                             )
 
                         }
-                        Spacer(modifier = Modifier.height(6.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                         HorizontalDivider()
                         Spacer(modifier = Modifier.height(6.dp))
 
@@ -349,7 +330,7 @@ fun EventDetailScreen(
 
                         Spacer(modifier = Modifier.height(6.dp))
                         HorizontalDivider()
-                        Spacer(modifier = Modifier.height(6.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
                         Text(
                             text = (uiState as EventDetailUiState.Success).event.desc,

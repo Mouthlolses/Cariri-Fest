@@ -86,11 +86,6 @@ fun EventListItem(
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.Gray
             )
-
-            Text(
-                text = event.date,
-                style = MaterialTheme.typography.bodyMedium
-            )
         }
     }
 }
