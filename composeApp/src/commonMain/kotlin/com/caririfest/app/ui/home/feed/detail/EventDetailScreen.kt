@@ -1,6 +1,7 @@
 package com.caririfest.app.ui.home.feed.detail
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,9 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -25,7 +29,9 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -39,14 +45,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import caririfest.composeapp.generated.resources.Res
-import caririfest.composeapp.generated.resources.calendar
 import caririfest.composeapp.generated.resources.caririfestlogo1
-import caririfest.composeapp.generated.resources.ic_loupe
+import caririfest.composeapp.generated.resources.image_break
 import caririfest.composeapp.generated.resources.left_arrow
-import caririfest.composeapp.generated.resources.location_pin
-import coil3.compose.AsyncImage
+import caririfest.composeapp.generated.resources.outlined_calendar
+import caririfest.composeapp.generated.resources.outlined_location_pin
+import caririfest.composeapp.generated.resources.outlined_map
+import coil3.compose.SubcomposeAsyncImage
 import com.caririfest.app.ui.components.BuyTicketBottomBar
 import com.caririfest.app.ui.components.ShareButton
+import com.caririfest.app.ui.components.Tag
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -64,6 +73,23 @@ fun EventDetailScreen(
 
     val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
+
+    val tagList = List(20) { }
+
+    LaunchedEffect(Unit) {
+        scope.launch {
+            while (true) {
+                listState.scrollBy(1f)
+                delay(16)
+
+                if (listState.firstVisibleItemIndex >= tagList.size / 2) {
+                    listState.scrollToItem(0)
+                }
+            }
+        }
+    }
+
 
     when (uiState) {
         EventDetailUiState.Loading -> {
@@ -146,13 +172,30 @@ fun EventDetailScreen(
                             .height(230.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        AsyncImage(
+                        SubcomposeAsyncImage(
                             model = (uiState as EventDetailUiState.Success).event.img,
                             contentDescription = "image_screen",
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(400.dp),
-                            contentScale = ContentScale.Crop
+                            contentScale = ContentScale.Crop,
+                            loading = {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator(
+                                        strokeWidth = 2.dp,
+                                        color = Color(0xFFFF9800)
+                                    )
+                                }
+                            },
+                            error = {
+                                Icon(
+                                    painter = painterResource(Res.drawable.image_break),
+                                    contentDescription = null
+                                )
+                            }
                         )
 
                         ShareButton(
@@ -198,6 +241,7 @@ fun EventDetailScreen(
                     }
 
                     Column(modifier = Modifier.padding(top = 35.dp)) {
+
                         Text(
                             text = (uiState as EventDetailUiState.Success).event.title,
                             style = typography.titleLarge,
@@ -209,16 +253,30 @@ fun EventDetailScreen(
                             textAlign = TextAlign.Center
                         )
 
-                        Spacer(modifier = Modifier.height(16.dp))
-
                         Row(
                             modifier = Modifier
-                                .padding(start = 16.dp),
+                                .padding(start = 16.dp)
+                                .fillMaxWidth(),
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
+                            Text(
+                                text = (uiState as EventDetailUiState.Success).event.place,
+                                style = typography.bodyMedium,
+                                color = Color.Gray,
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(26.dp))
+
+                        Row(
+                            modifier = Modifier
+                                .padding(start = 16.dp, end = 16.dp)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             Icon(
-                                painter = painterResource(Res.drawable.calendar),
+                                painter = painterResource(Res.drawable.outlined_calendar),
                                 contentDescription = "location",
                                 tint = Color.DarkGray,
                                 modifier = Modifier.size(18.dp)
@@ -227,29 +285,24 @@ fun EventDetailScreen(
                             Text(
                                 text = (uiState as EventDetailUiState.Success).event.date,
                                 style = typography.bodyMedium,
-                                color = Color.Gray
+                                color = Color.Black
                             )
-                        }
-                        Spacer(modifier = Modifier.height(16.dp))
 
-                        Row(
-                            modifier = Modifier
-                                .padding(start = 16.dp),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                            Spacer(modifier = Modifier.weight(1f))
+
                             Icon(
-                                painter = painterResource(Res.drawable.ic_loupe),
-                                contentDescription = "location",
+                                painter = painterResource(Res.drawable.outlined_map),
+                                contentDescription = "location-map",
                                 tint = Color.DarkGray,
                                 modifier = Modifier.size(18.dp)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
-                                text = (uiState as EventDetailUiState.Success).event.time,
+                                text = "Veja no mapa",
                                 style = typography.bodyMedium,
-                                color = Color.Gray
+                                color = Color.Black
                             )
+
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))
@@ -261,64 +314,41 @@ fun EventDetailScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
-                                painter = painterResource(Res.drawable.location_pin),
+                                painter = painterResource(Res.drawable.outlined_location_pin),
                                 contentDescription = "location",
                                 tint = Color.Red,
                                 modifier = Modifier.size(18.dp)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = (uiState as EventDetailUiState.Success).event.place,
-                                style = typography.bodyMedium,
-                                color = Color.Gray,
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        Row(
-                            modifier = Modifier
-                                .padding(start = 16.dp),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                painter = painterResource(Res.drawable.location_pin),
-                                contentDescription = "location",
-                                tint = Color.Red,
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = (uiState as EventDetailUiState.Success).event.location,
-                                style = typography.bodyMedium,
-                                color = Color.Gray,
-                            )
+                            TextButton(
+                                onClick = {}
+                            ) {
+                                Text(
+                                    text = (uiState as EventDetailUiState.Success).event.location,
+                                    style = typography.bodyMedium,
+                                    color = Color.Black
+                                )
+                            }
                         }
                         Spacer(modifier = Modifier.height(6.dp))
                         HorizontalDivider()
                         Spacer(modifier = Modifier.height(6.dp))
 
-//                        LazyRow(
-//                            state = listState,
-//                            modifier = Modifier
-//                                .fillMaxWidth(),
-//                            verticalAlignment = Alignment.CenterVertically,
-//                            userScrollEnabled = false
-//                        ) {
-//                            items(tagList) { isFavorite ->
-//                                Tag(
-//                                    text = if (isFavorite)
-//                                        stringResource(R.string.available)
-//                                    else
-//                                        stringResource(R.string.exhausted),
-//                                    backgroundColor = if (isFavorite) Color(0xFF4CAF50) else Color(
-//                                        0xFF9E9E9E
-//                                    ),
-//                                    modifier = Modifier.padding(start = 16.dp)
-//                                )
-//                            }
-//                        }
+                        LazyRow(
+                            state = listState,
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            userScrollEnabled = false
+                        ) {
+                            items(tagList) {
+                                Tag(
+                                    text = "Disponível",
+                                    backgroundColor = Color(0xFF4CAF50),
+                                    modifier = Modifier.padding(start = 16.dp)
+                                )
+                            }
+                        }
 
                         Spacer(modifier = Modifier.height(6.dp))
                         HorizontalDivider()

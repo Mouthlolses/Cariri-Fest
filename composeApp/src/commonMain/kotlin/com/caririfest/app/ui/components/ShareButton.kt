@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import caririfest.composeapp.generated.resources.Res
 import caririfest.composeapp.generated.resources.icon_cupon
 import caririfest.composeapp.generated.resources.icon_maps
+import caririfest.composeapp.generated.resources.mobile_share
 import caririfest.composeapp.generated.resources.upload
 import org.jetbrains.compose.resources.painterResource
 
@@ -44,7 +45,7 @@ fun ShareButton(
         contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp)
     ) {
         Icon(
-            painter = painterResource(Res.drawable.upload),
+            painter = painterResource(Res.drawable.mobile_share),
             contentDescription = "Compartilhar",
             tint = Color(0xFFFF5733),
             modifier = Modifier.size(26.dp)
