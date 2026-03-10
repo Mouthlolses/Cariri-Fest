@@ -42,7 +42,7 @@ fun Tag(
     ) {
         Icon(
             painter = painter,
-            contentDescription = "Cartão",
+            contentDescription = "Card",
             tint = Color.White,
             modifier = Modifier.size(16.dp)
         )

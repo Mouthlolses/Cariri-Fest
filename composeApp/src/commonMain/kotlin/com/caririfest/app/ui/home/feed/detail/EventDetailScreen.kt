@@ -32,7 +32,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -46,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import caririfest.composeapp.generated.resources.Res
 import caririfest.composeapp.generated.resources.caririfestlogo1
+import caririfest.composeapp.generated.resources.credit_card
 import caririfest.composeapp.generated.resources.flat_map
 import caririfest.composeapp.generated.resources.image_break
 import caririfest.composeapp.generated.resources.left_arrow
@@ -55,10 +55,10 @@ import coil3.compose.SubcomposeAsyncImage
 import com.caririfest.app.share.buildShareText
 import com.caririfest.app.share.shareEvent
 import com.caririfest.app.ui.components.BuyTicketBottomBar
+import com.caririfest.app.ui.components.LoadingIndicatorLayout
 import com.caririfest.app.ui.components.ShareButton
 import com.caririfest.app.ui.components.Tag
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -74,21 +74,18 @@ fun EventDetailScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val scrollState = rememberScrollState()
-    val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
 
     val tagList = List(20) { }
 
     LaunchedEffect(Unit) {
-        scope.launch {
-            while (true) {
-                listState.scrollBy(1f)
-                delay(16)
+        while (true) {
+            listState.scrollBy(1f)
+            delay(16)
 
-                if (listState.firstVisibleItemIndex >= tagList.size / 2) {
-                    listState.scrollToItem(0)
-                }
+            if (listState.firstVisibleItemIndex >= tagList.size / 2) {
+                listState.scrollToItem(0)
             }
         }
     }
@@ -100,9 +97,7 @@ fun EventDetailScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator(
-                    strokeWidth = 3.dp
-                )
+                LoadingIndicatorLayout()
             }
         }
 
@@ -288,7 +283,7 @@ fun EventDetailScreen(
 
                         Row(
                             modifier = Modifier
-                                .padding(start = 16.dp)
+                                .padding(start = 16.dp, end = 16.dp)
                                 .fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -305,6 +300,14 @@ fun EventDetailScreen(
                                 style = typography.bodyMedium,
                                 color = Color.Black,
                                 maxLines = 1
+                            )
+
+                            Spacer(modifier = Modifier.weight(1f))
+
+                            Tag(
+                                text = "Parcele em até 12x",
+                                backgroundColor = Color(0xFF027B09),
+                                painter = painterResource(Res.drawable.credit_card)
                             )
 
                         }
