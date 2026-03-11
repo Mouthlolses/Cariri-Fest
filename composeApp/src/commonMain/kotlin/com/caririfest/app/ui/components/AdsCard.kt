@@ -15,7 +15,9 @@ import coil3.compose.SubcomposeAsyncImage
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun AdsCard() {
+fun AdsCard(
+    ads: String? = null
+) {
     OutlinedCard(
         onClick = { },
         modifier = Modifier
@@ -27,7 +29,7 @@ fun AdsCard() {
                 .fillMaxWidth()
         ) {
             SubcomposeAsyncImage(
-                model = "https://topsortassets.com/asset_01kewrgjyaepcrg8h7yj100vg3.png",
+                model = ads,
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth(),

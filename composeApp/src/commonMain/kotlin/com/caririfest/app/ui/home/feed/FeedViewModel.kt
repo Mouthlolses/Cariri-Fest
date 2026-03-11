@@ -37,6 +37,7 @@ class FeedViewModel(
         }
     }
 
+    private val adsContent = "https://topsortassets.com/asset_01kewrgjyaepcrg8h7yj100vg3.png"
     private val defaultCategories = listOf(
         Categories(
             id = 1,
@@ -86,6 +87,7 @@ class FeedViewModel(
     ) { events, refreshing ->
         FeedUiState(
             events = events,
+            adsCard = adsContent,
             categories = defaultCategories,
             isRefreshing = refreshing,
             isLoading = false

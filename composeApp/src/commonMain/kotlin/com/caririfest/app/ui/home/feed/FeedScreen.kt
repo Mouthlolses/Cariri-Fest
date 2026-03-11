@@ -90,9 +90,10 @@ fun FeedScreen(
     }
 
     LaunchedEffect(
+        pagerState.pageCount,
         pagerState.isScrollInProgress
     ) {
-        if (!pagerState.isScrollInProgress) {
+        if (!pagerState.isScrollInProgress && pagerState.pageCount > 1) {
             delay(6000)
             val nextPage = (pagerState.currentPage + 1) % pagerState.pageCount
             pagerState.animateScrollToPage(
@@ -432,7 +433,9 @@ fun FeedScreen(
                             }
                         }
                         item {
-                            AdsCard()
+                            AdsCard(
+                                ads = state.adsCard
+                            )
                         }
                         item {
                             Row(
