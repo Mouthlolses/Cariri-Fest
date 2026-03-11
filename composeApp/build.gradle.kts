@@ -46,6 +46,8 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.coil)
 
+            implementation(libs.onesignal)
+
         }
 
         commonMain.dependencies {

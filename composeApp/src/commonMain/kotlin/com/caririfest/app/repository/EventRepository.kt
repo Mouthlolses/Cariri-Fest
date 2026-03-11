@@ -4,10 +4,6 @@ import com.caririfest.app.data.EventService
 import com.caririfest.app.data.database.EventDao
 import com.caririfest.app.model.Event
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onStart
 
 interface EventRepository {
     fun getAll(): Flow<List<Event>>
@@ -24,40 +20,24 @@ class EventRepositoryImpl(
     private val dao: EventDao
 ) : EventRepository {
 
-    override fun getAll(): Flow<List<Event>> = dao.getAll()
-        .onStart {
-            refresh()
-            emitAll(dao.getAll())
-        }
-        .catch { e ->
-            throw e
-        }
+    override fun getAll(): Flow<List<Event>> =
+        dao.getAll()
 
-    override fun getAllHandle(ids: List<String>): Flow<List<Event>> = dao.getAllHandle(ids)
-        .onStart {
-            refresh()
-            emitAll(dao.getAllHandle(ids))
-        }
-        .catch { e ->
-            throw e
-        }
 
-    override fun getById(id: String): Flow<Event?> = flow {
-        refresh()
-        emitAll(dao.getById(id))
-    }
+    override fun getAllHandle(ids: List<String>): Flow<List<Event>> =
+        dao.getAllHandle(ids)
+
+
+    override fun getById(id: String): Flow<Event?> =
+        dao.getById(id)
+
 
     override suspend fun refresh() {
-        try {
-            val remoteEvents = service.getAll()
 
-            if (remoteEvents.isNotEmpty()) {
-                dao.insert(remoteEvents)
-            }
+        val remoteEvents = service.getAll()
 
-        } catch (e: Exception) {
-            println("Erro ao processar questions.json: $e")
-            throw e
+        if (remoteEvents.isNotEmpty()) {
+            dao.insert(remoteEvents)
         }
     }
 }

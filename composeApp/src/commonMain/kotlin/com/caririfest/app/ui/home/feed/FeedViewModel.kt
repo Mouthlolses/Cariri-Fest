@@ -6,16 +6,36 @@ import caririfest.composeapp.generated.resources.Res
 import caririfest.composeapp.generated.resources.caririfestlogo1
 import co.touchlab.kermit.Logger
 import com.caririfest.app.repository.EventRepository
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 
 class FeedViewModel(
-    eventRepository: EventRepository,
-    logger: Logger
+    private val eventRepository: EventRepository,
+    private val logger: Logger
 ) : ViewModel() {
+
+    private val _isRefreshing = MutableStateFlow(false)
+
+    init {
+        reload()
+    }
+
+    fun reload() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            try {
+                eventRepository.refresh()
+            } catch (e: Exception) {
+                logger.d { e.message ?: "" }
+            }
+            _isRefreshing.value = false
+        }
+    }
 
     private val defaultCategories = listOf(
         Categories(
@@ -60,18 +80,22 @@ class FeedViewModel(
         )
     )
 
-    val uiState = eventRepository.getAll()
-        .map { events ->
-            FeedUiState(
-                events = events,
-                categories = defaultCategories,
-                isLoading = false
-            )
-        }
+    val uiState = combine(
+        eventRepository.getAll(),
+        _isRefreshing
+    ) { events, refreshing ->
+        FeedUiState(
+            events = events,
+            categories = defaultCategories,
+            isRefreshing = refreshing,
+            isLoading = false
+        )
+    }
         .catch { e ->
             emit(
                 FeedUiState(
-                    error = "Error : ${e.message}"
+                    error = "Error : ${e.message}",
+                    isLoading = false
                 )
             )
             logger.d { "${e.message}" }
@@ -79,10 +103,7 @@ class FeedViewModel(
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
-            FeedUiState(
-                isLoading = true,
-                categories = defaultCategories
-            )
+            FeedUiState(isLoading = true)
         )
 }
 

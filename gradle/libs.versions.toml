@@ -29,6 +29,7 @@ koin = "4.1.1"
 
 ksp = "2.3.5"
 androidx-room = "2.8.4"
+onesignal = "5.7.1"
 sqlite = "2.6.2"
 
 
@@ -86,6 +87,7 @@ datastore-preferences = { module = "androidx.datastore:datastore-preferences", v
 
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room" }
+onesignal = { module = "com.onesignal:OneSignal", version.ref = "onesignal" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 
 [plugins]

@@ -25,6 +25,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -105,7 +107,7 @@ fun FeedScreen(
 
 
     when {
-        state.isLoading -> {
+        state.isLoading && state.events.isEmpty() -> {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -122,16 +124,27 @@ fun FeedScreen(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+
                     Image(
                         painter = painterResource(Res.drawable.mascot_sf),
                         contentDescription = "mascot"
                     )
+
                     Spacer(modifier = Modifier.height(16.dp))
+
                     Text(
                         state.error!!,
                         color = Color.Black,
                         textAlign = TextAlign.Center
                     )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(
+                        onClick = { viewModel.reload() }
+                    ) {
+                        Text("Tentar novamente")
+                    }
                 }
             }
         }
@@ -168,330 +181,336 @@ fun FeedScreen(
                     )
                 }
             ) { innerPadding ->
-                LazyColumn(
+
+                PullToRefreshBox(
+                    isRefreshing = state.isRefreshing,
+                    onRefresh = { viewModel.reload() },
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color(0xFFEFEFEF))
                         .padding(innerPadding)
-                        .navigationBarsPadding(),
-                    contentPadding = PaddingValues(bottom = 100.dp)
+                        .background(Color(0xFFEFEFEF))
+                        .navigationBarsPadding()
                 ) {
-                    item {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            Text(
-                                text = "Imperdíveis",
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 24.sp,
-                                color = Color(0xFF1F2937),
-                                modifier = Modifier
-                                    .padding(start = 12.dp, top = 12.dp, bottom = 8.dp)
-                            )
-                        }
-                        Column(
-                            modifier = Modifier
-                                .shadow(
-                                    elevation = 8.dp,
-                                    shape = RoundedCornerShape(16.dp),
-                                    clip = false
-                                )
-                                .background(Color.White)
-                        ) {
-                            HorizontalPager(
-                                state = pagerState,
+                    LazyColumn(
+                        contentPadding = PaddingValues(bottom = 100.dp)
+                    ) {
+                        item {
+                            Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(366.dp)
-                            ) { page ->
-                                val event =
-                                    uiStateHotFilter[page]
-                                Card(
+                            ) {
+                                Text(
+                                    text = "Imperdíveis",
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = 24.sp,
+                                    color = Color(0xFF1F2937),
+                                    modifier = Modifier
+                                        .padding(start = 12.dp, top = 12.dp, bottom = 8.dp)
+                                )
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .shadow(
+                                        elevation = 8.dp,
+                                        shape = RoundedCornerShape(16.dp),
+                                        clip = false
+                                    )
+                                    .background(Color.White)
+                            ) {
+                                HorizontalPager(
+                                    state = pagerState,
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .clickable(
-                                            onClick = {
-                                                onEventClick(event.id)
-                                            },
-                                            enabled = true
-                                        )
-                                        .padding(
-                                            start = 16.dp,
-                                            end = 16.dp,
-                                            top = 16.dp,
-                                            bottom = 16.dp
-                                        ),
-                                ) {
-                                    Column(
-                                        Modifier
+                                        .height(366.dp)
+                                ) { page ->
+                                    val event =
+                                        uiStateHotFilter[page]
+                                    Card(
+                                        modifier = Modifier
                                             .fillMaxWidth()
-                                            .background(Color.White)
-                                            .padding(bottom = 12.dp),
-                                        horizontalAlignment = Alignment.CenterHorizontally
+                                            .clickable(
+                                                onClick = {
+                                                    onEventClick(event.id)
+                                                },
+                                                enabled = true
+                                            )
+                                            .padding(
+                                                start = 16.dp,
+                                                end = 16.dp,
+                                                top = 16.dp,
+                                                bottom = 16.dp
+                                            ),
                                     ) {
-                                        SubcomposeAsyncImage(
-                                            model = event.img,
-                                            contentDescription = "events",
-                                            modifier = Modifier
+                                        Column(
+                                            Modifier
                                                 .fillMaxWidth()
-                                                .height(204.dp)
-                                                .clip(RoundedCornerShape(26.dp)),
-                                            contentScale = ContentScale.Crop,
-                                            loading = {
-                                                Box(
-                                                    modifier = Modifier.fillMaxSize(),
-                                                    contentAlignment = Alignment.Center
-                                                ) {
-                                                    CircularProgressIndicator(
-                                                        strokeWidth = 2.dp,
-                                                        color = Color(0xFFFF9800)
+                                                .background(Color.White)
+                                                .padding(bottom = 12.dp),
+                                            horizontalAlignment = Alignment.CenterHorizontally
+                                        ) {
+                                            SubcomposeAsyncImage(
+                                                model = event.img,
+                                                contentDescription = "events",
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .height(204.dp)
+                                                    .clip(RoundedCornerShape(26.dp)),
+                                                contentScale = ContentScale.Crop,
+                                                loading = {
+                                                    Box(
+                                                        modifier = Modifier.fillMaxSize(),
+                                                        contentAlignment = Alignment.Center
+                                                    ) {
+                                                        CircularProgressIndicator(
+                                                            strokeWidth = 2.dp,
+                                                            color = Color(0xFFFF9800)
+                                                        )
+                                                    }
+                                                },
+                                                error = {
+                                                    Icon(
+                                                        painter = painterResource(Res.drawable.image_break),
+                                                        contentDescription = null
                                                     )
                                                 }
-                                            },
-                                            error = {
+                                            )
+                                            Spacer(modifier = Modifier.height(12.dp))
+                                            Text(
+                                                text = event.title,
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = 18.sp,
+                                                color = Color(0xFF333333),
+                                                textAlign = TextAlign.Center,
+                                                modifier = Modifier
+                                                    .padding(horizontal = 16.dp)
+                                            )
+                                            Spacer(modifier = Modifier.height(12.dp))
+                                            Row(verticalAlignment = Alignment.CenterVertically) {
                                                 Icon(
-                                                    painter = painterResource(Res.drawable.image_break),
-                                                    contentDescription = null
+                                                    painter = painterResource(Res.drawable.outlined_calendar),
+                                                    contentDescription = "date",
+                                                    tint = Color.Gray,
+                                                    modifier = Modifier.size(18.dp)
+                                                )
+                                                Spacer(modifier = Modifier.width(4.dp))
+                                                Text(
+                                                    text = event.date,
+                                                    fontWeight = FontWeight.Medium,
+                                                    fontSize = 14.sp,
+                                                    color = Color(0xFF666666),
+                                                    textAlign = TextAlign.Center,
                                                 )
                                             }
-                                        )
-                                        Spacer(modifier = Modifier.height(12.dp))
-                                        Text(
-                                            text = event.title,
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 18.sp,
-                                            color = Color(0xFF333333),
-                                            textAlign = TextAlign.Center,
-                                            modifier = Modifier
-                                                .padding(horizontal = 16.dp)
-                                        )
-                                        Spacer(modifier = Modifier.height(12.dp))
-                                        Row(verticalAlignment = Alignment.CenterVertically) {
-                                            Icon(
-                                                painter = painterResource(Res.drawable.outlined_calendar),
-                                                contentDescription = "date",
-                                                tint = Color.Gray,
-                                                modifier = Modifier.size(18.dp)
-                                            )
-                                            Spacer(modifier = Modifier.width(4.dp))
-                                            Text(
-                                                text = event.date,
-                                                fontWeight = FontWeight.Medium,
-                                                fontSize = 14.sp,
-                                                color = Color(0xFF666666),
-                                                textAlign = TextAlign.Center,
-                                            )
-                                        }
-                                        Spacer(modifier = Modifier.height(2.dp))
-                                        Row(verticalAlignment = Alignment.CenterVertically) {
-                                            Icon(
-                                                painter = painterResource(Res.drawable.outlined_location_pin),
-                                                contentDescription = "Place",
-                                                tint = Color.Red,
-                                                modifier = Modifier.size(18.dp)
-                                            )
-                                            Spacer(modifier = Modifier.width(4.dp))
-                                            Text(
-                                                text = event.location,
-                                                fontWeight = FontWeight.Normal,
-                                                fontSize = 14.sp,
-                                                color = Color(0xFF888888),
-                                                textAlign = TextAlign.Center,
-                                            )
+                                            Spacer(modifier = Modifier.height(2.dp))
+                                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                                Icon(
+                                                    painter = painterResource(Res.drawable.outlined_location_pin),
+                                                    contentDescription = "Place",
+                                                    tint = Color.Red,
+                                                    modifier = Modifier.size(18.dp)
+                                                )
+                                                Spacer(modifier = Modifier.width(4.dp))
+                                                Text(
+                                                    text = event.location,
+                                                    fontWeight = FontWeight.Normal,
+                                                    fontSize = 14.sp,
+                                                    color = Color(0xFF888888),
+                                                    textAlign = TextAlign.Center,
+                                                )
+                                            }
                                         }
                                     }
                                 }
-                            }
-                            Row(
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .align(Alignment.CenterHorizontally)
-                            ) {
-                                repeat(uiStateHotFilter.size) { index ->
-                                    val isSelected = pagerState.currentPage == index
-                                    Box(
-                                        modifier = Modifier
-                                            .padding(4.dp)
-                                            .size(if (isSelected) 12.dp else 8.dp)
-                                            .background(
-                                                if (isSelected) Color(0xFFFF6D00) else Color.LightGray,
-                                                shape = CircleShape
-                                            )
-                                    )
-                                }
-                            }
-                            Spacer(modifier = Modifier.height(26.dp))
-                        }
-                    }
-                    item {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 18.dp)
-                                .padding(top = 18.dp, bottom = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "Categorias",
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 22.sp,
-                                color = Color(0xFF1F2937),
-                                modifier = Modifier.weight(1f)
-                            )
-                            TextButton(
-                                onClick = {},
-                                contentPadding = PaddingValues(0.dp)
-                            ) {
-                                Text(
-                                    text = "Ver tudo",
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = Color(0xFF2563EB)
-                                )
-                            }
-                        }
-                        LazyRow(
-                            contentPadding = PaddingValues(horizontal = 16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            items(state.categories) { value ->
-                                CategoryCard(
-                                    icon = value.image,
-                                    title = value.nameCategories
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.padding(vertical = 4.dp))
-                    }
-                    item {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 18.dp)
-                                .padding(top = 18.dp, bottom = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "Em Alta no Cariri",
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 22.sp,
-                                color = Color(0xFF1F2937),
-                                modifier = Modifier.weight(1f)
-                            )
-                            TextButton(
-                                onClick = {
-                                    onEverythingClick(
-                                        state.events.map { it.id }
-                                    )
-                                },
-                                contentPadding = PaddingValues(0.dp)
-                            ) {
-                                Text(
-                                    text = "Ver tudo",
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = Color(0xFF2563EB)
-                                )
-                            }
-                        }
-                        LazyRow(
-                            contentPadding = PaddingValues(horizontal = 16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            items(state.events) { doc ->
-                                EventCard(
-                                    imageUrl = doc.img,
-                                    title = doc.title,
-                                    location = doc.location,
-                                    date = doc.date,
-                                    onClick = {
-                                        onEventClick(doc.id)
-                                    }
-                                )
-                            }
-                        }
-                    }
-                    item {
-                        AdsCard()
-                    }
-                    item {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 18.dp)
-                                .background(Color(0xFFE5E7EB), RoundedCornerShape(30.dp))
-                                .padding(4.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-
-                            cities.forEach { city ->
-
-                                val selected = city == selectedCity
-
-                                Box(
+                                Row(
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier
-                                        .weight(1f)
-                                        .clip(RoundedCornerShape(30.dp))
-                                        .background(if (selected) Color.White else Color.Transparent)
-                                        .clickable { selectedCity = city }
-                                        .padding(vertical = 10.dp),
-                                    contentAlignment = Alignment.Center
+                                        .align(Alignment.CenterHorizontally)
+                                ) {
+                                    repeat(uiStateHotFilter.size) { index ->
+                                        val isSelected = pagerState.currentPage == index
+                                        Box(
+                                            modifier = Modifier
+                                                .padding(4.dp)
+                                                .size(if (isSelected) 12.dp else 8.dp)
+                                                .background(
+                                                    if (isSelected) Color(0xFFFF6D00) else Color.LightGray,
+                                                    shape = CircleShape
+                                                )
+                                        )
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(26.dp))
+                            }
+                        }
+                        item {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 18.dp)
+                                    .padding(top = 18.dp, bottom = 4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Categorias",
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = 22.sp,
+                                    color = Color(0xFF1F2937),
+                                    modifier = Modifier.weight(1f)
+                                )
+                                TextButton(
+                                    onClick = {},
+                                    contentPadding = PaddingValues(0.dp)
                                 ) {
                                     Text(
-                                        text = city,
-                                        fontSize = 13.sp,
+                                        text = "Ver tudo",
+                                        fontSize = 14.sp,
                                         fontWeight = FontWeight.Medium,
-                                        color = if (selected) Color.Black else Color.Gray,
+                                        color = Color(0xFF2563EB)
+                                    )
+                                }
+                            }
+                            LazyRow(
+                                contentPadding = PaddingValues(horizontal = 16.dp),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                items(state.categories) { value ->
+                                    CategoryCard(
+                                        icon = value.image,
+                                        title = value.nameCategories
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.padding(vertical = 4.dp))
+                        }
+                        item {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 18.dp)
+                                    .padding(top = 18.dp, bottom = 4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Em Alta no Cariri",
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = 22.sp,
+                                    color = Color(0xFF1F2937),
+                                    modifier = Modifier.weight(1f)
+                                )
+                                TextButton(
+                                    onClick = {
+                                        onEverythingClick(
+                                            state.events.map { it.id }
+                                        )
+                                    },
+                                    contentPadding = PaddingValues(0.dp)
+                                ) {
+                                    Text(
+                                        text = "Ver tudo",
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = Color(0xFF2563EB)
+                                    )
+                                }
+                            }
+                            LazyRow(
+                                contentPadding = PaddingValues(horizontal = 16.dp),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                items(state.events) { doc ->
+                                    EventCard(
+                                        imageUrl = doc.img,
+                                        title = doc.title,
+                                        location = doc.location,
+                                        date = doc.date,
+                                        onClick = {
+                                            onEventClick(doc.id)
+                                        }
                                     )
                                 }
                             }
                         }
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 18.dp)
-                                .padding(top = 8.dp, bottom = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-
-                            Text(
-                                text = selectedCity,
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 22.sp,
-                                color = Color(0xFF1F2937),
-                                modifier = Modifier.weight(1f)
-                            )
-                            TextButton(
-                                onClick = { },
-                                contentPadding = PaddingValues(0.dp)
-                            ) {
-                                Text(
-                                    text = "Ver tudo",
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = Color(0xFF2563EB)
-                                )
-                            }
+                        item {
+                            AdsCard()
                         }
-                        LazyRow(
-                            contentPadding = PaddingValues(horizontal = 16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            items(
-                                filteredEvents
-                            ) { doc ->
-                                EventCard(
-                                    imageUrl = doc.img,
-                                    title = doc.title,
-                                    location = doc.location,
-                                    date = doc.date,
-                                    onClick = {
-                                        onEventClick(doc.id)
+                        item {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 18.dp)
+                                    .background(Color(0xFFE5E7EB), RoundedCornerShape(30.dp))
+                                    .padding(4.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+
+                                cities.forEach { city ->
+
+                                    val selected = city == selectedCity
+
+                                    Box(
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .clip(RoundedCornerShape(30.dp))
+                                            .background(if (selected) Color.White else Color.Transparent)
+                                            .clickable { selectedCity = city }
+                                            .padding(vertical = 10.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = city,
+                                            fontSize = 13.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            color = if (selected) Color.Black else Color.Gray,
+                                        )
                                     }
+                                }
+                            }
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 18.dp)
+                                    .padding(top = 8.dp, bottom = 4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+
+                                Text(
+                                    text = selectedCity,
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = 22.sp,
+                                    color = Color(0xFF1F2937),
+                                    modifier = Modifier.weight(1f)
                                 )
+                                TextButton(
+                                    onClick = { },
+                                    contentPadding = PaddingValues(0.dp)
+                                ) {
+                                    Text(
+                                        text = "Ver tudo",
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = Color(0xFF2563EB)
+                                    )
+                                }
+                            }
+                            LazyRow(
+                                contentPadding = PaddingValues(horizontal = 16.dp),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                items(
+                                    filteredEvents
+                                ) { doc ->
+                                    EventCard(
+                                        imageUrl = doc.img,
+                                        title = doc.title,
+                                        location = doc.location,
+                                        date = doc.date,
+                                        onClick = {
+                                            onEventClick(doc.id)
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
