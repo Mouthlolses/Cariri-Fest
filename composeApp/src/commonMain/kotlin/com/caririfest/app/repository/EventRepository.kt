@@ -31,13 +31,12 @@ class EventRepositoryImpl(
     override fun getById(id: String): Flow<Event?> =
         dao.getById(id)
 
-
     override suspend fun refresh() {
 
         val remoteEvents = service.getAll()
 
         if (remoteEvents.isNotEmpty()) {
-            dao.insert(remoteEvents)
+            dao.replaceAll(remoteEvents)
         }
     }
 }

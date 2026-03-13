@@ -1,11 +1,10 @@
 package com.caririfest.app.data.database
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
+import androidx.room.Transaction
 import com.caririfest.app.model.Event
 import kotlinx.coroutines.flow.Flow
 
@@ -25,5 +24,17 @@ interface EventDao {
 
     @Query("DELETE FROM events WHERE id IN (:ids)")
     suspend fun deleteEventByIds(ids: List<String>)
+
+    @Query("DELETE FROM events")
+    suspend fun deleteAll()
+
+    @Transaction
+    suspend fun replaceAll(events: List<Event>) {
+        deleteAll()
+        insert(events)
+    }
+
+    @Query("DELETE FROM events WHERE id NOT IN (:ids)")
+    suspend fun deleteEventsNotIn(ids: List<String>)
 
 }
