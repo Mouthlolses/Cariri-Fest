@@ -1,4 +1,4 @@
-package com.caririfest.app.ui.home.feed.seeall
+package com.caririfest.app.ui.home.feed.seeAll
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

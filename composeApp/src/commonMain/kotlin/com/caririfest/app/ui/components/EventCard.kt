@@ -40,6 +40,7 @@ import org.jetbrains.compose.resources.painterResource
 @Preview(showBackground = true)
 @Composable
 fun EventCard(
+    modifier: Modifier = Modifier,
     cardColor: Color = Color.White,
     cardWidth: Dp = 280.dp,
     cardElevation: CardElevation = CardDefaults.cardElevation(4.dp),
@@ -52,7 +53,7 @@ fun EventCard(
     val imageRatio = 16f / 9f
 
     ElevatedCard(
-        modifier = Modifier
+        modifier = modifier
             .width(cardWidth)
             .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),

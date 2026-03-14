@@ -12,6 +12,8 @@ interface EventRepository {
 
     fun getById(id: String): Flow<Event?>
 
+    fun search(query: String): Flow<List<Event>>
+
     suspend fun refresh()
 }
 
@@ -30,6 +32,9 @@ class EventRepositoryImpl(
 
     override fun getById(id: String): Flow<Event?> =
         dao.getById(id)
+
+    override fun search(query: String): Flow<List<Event>> =
+        dao.search(query)
 
     override suspend fun refresh() {
 

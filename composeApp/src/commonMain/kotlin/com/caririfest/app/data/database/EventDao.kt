@@ -37,4 +37,13 @@ interface EventDao {
     @Query("DELETE FROM events WHERE id NOT IN (:ids)")
     suspend fun deleteEventsNotIn(ids: List<String>)
 
+    @Query(
+        """
+         SELECT * FROM events
+         WHERE LOWER(title) LIKE '%' || :query || '%'
+         OR LOWER(location) LIKE '%' || :query || '%'
+         """
+    )
+    fun search(query: String): Flow<List<Event>>
+
 }

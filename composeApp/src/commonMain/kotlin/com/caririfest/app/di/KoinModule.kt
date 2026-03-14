@@ -12,7 +12,8 @@ import com.caririfest.app.repository.EventRepository
 import com.caririfest.app.repository.EventRepositoryImpl
 import com.caririfest.app.ui.home.feed.FeedViewModel
 import com.caririfest.app.ui.home.feed.detail.EventDetailViewModel
-import com.caririfest.app.ui.home.feed.seeall.SeeAllViewModel
+import com.caririfest.app.ui.home.feed.seeAll.SeeAllViewModel
+import com.caririfest.app.ui.home.search.SearchViewModel
 import com.caririfest.app.ui.onboarding.OnBoardingViewModel
 import com.caririfest.app.ui.splash.SplashViewModel
 import com.russhwolf.settings.Settings
@@ -44,6 +45,12 @@ val appModule = module {
     }
 
     viewModel {
+        SearchViewModel(
+            eventRepository = get()
+        )
+    }
+
+    viewModel {
         SplashViewModel(get())
     }
 
@@ -54,6 +61,7 @@ val appModule = module {
     viewModel {
         RootViewModel(get(), get())
     }
+
 
     single { Logger.withTag("CaririFestAppLogger") }
 

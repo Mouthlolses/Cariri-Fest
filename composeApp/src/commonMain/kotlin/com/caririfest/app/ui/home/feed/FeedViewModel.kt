@@ -20,9 +20,22 @@ class FeedViewModel(
 ) : ViewModel() {
 
     private val _isRefreshing = MutableStateFlow(false)
+    private val _isLoading = MutableStateFlow(true)
 
     init {
-        reload()
+        firstLoad()
+    }
+
+    private fun firstLoad() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                eventRepository.refresh()
+            } catch (e: Exception) {
+                logger.d { e.message ?: "" }
+            }
+            _isLoading.value = false
+        }
     }
 
     fun reload() {
@@ -83,14 +96,15 @@ class FeedViewModel(
 
     val uiState = combine(
         eventRepository.getAll(),
-        _isRefreshing
-    ) { events, refreshing ->
+        _isRefreshing,
+        _isLoading
+    ) { events, refreshing, loading ->
         FeedUiState(
             events = events,
             adsCard = adsContent,
             categories = defaultCategories,
             isRefreshing = refreshing,
-            isLoading = false
+            isLoading = loading
         )
     }
         .catch { e ->
